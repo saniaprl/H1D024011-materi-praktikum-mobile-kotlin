@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -28,17 +30,45 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import com.pemmob.sani.ui.theme.JualanTheme
+import com.pemmob.sani.ui.screen.BasicInfoScreen
+import com.pemmob.sani.ui.screen.HubungiKamiScreen
 
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
         setContent {
             JualanTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    LayoutTentangJualan()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = MaterialTheme.colorScheme.background
+                ) {
+                    val navController = rememberNavController()
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = "basic_info"
+                    ) {
+                        composable(route = "basic_info") {
+                            BasicInfoScreen(
+                                onNavigateToContact = {
+                                    navController.navigate(route = "form_screen")
+                                }
+                            )
+                        }
+
+                        composable(route = "form_screen") {
+                            HubungiKamiScreen(
+                                navController = navController
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -70,7 +100,7 @@ fun LayoutTentangJualan() {
         ) {
             Column {
                 Image(
-                    painter = painterResource(id = R.mipmap.ic_launcher_foreground),
+                    painter = painterResource(id = R.drawable.ic_launcher_foreground),
                     contentDescription = "Jualan".toString(),
                     modifier = Modifier.size(150.dp),
                     contentScale = ContentScale.Crop
